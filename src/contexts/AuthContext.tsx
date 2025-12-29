@@ -117,23 +117,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   password: string
 ): Promise<{ success: boolean; error?: string }> => {
   try {
-    // 1️⃣ Register user (old style kept)
-    await registerUser({
+    // Register user - backend returns token in response
+    const result = await registerUser({
       name: username,
       email,
       password,
     });
 
-    // 2️⃣ AUTO LOGIN immediately
-    const loginResult = await loginUser({ email, password });
-
-    if (loginResult.success && loginResult.data) {
-      const userToken = loginResult.data.token;
-      const mappedUser = {
-        id: loginResult.data._id,
-        username: loginResult.data.username,
-        email: loginResult.data.email,
-      };
+    if (result.success && result.user && result.token) {
+      // Use token from register response - NO separate login call
+      const userToken = result.token;
+      const mappedUser = mapAPIUserToUser(result.user, userToken);
 
       setUser(mappedUser);
       setToken(userToken);
@@ -144,7 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { success: true };
     }
 
-    return { success: false, error: 'Login after register failed' };
+    return { success: false, error: result.error || 'Registration failed' };
   } catch (error: any) {
     return {
       success: false,

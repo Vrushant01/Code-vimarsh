@@ -8,6 +8,7 @@ import Layout from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { getProjects, Project } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
+import { getAssetUrl } from '@/lib/apiUrl';
 
 export default function Projects() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -184,7 +185,7 @@ export default function Projects() {
                 <div className="relative h-48 overflow-hidden bg-secondary">
                   {project.image ? (
                     <img
-                      src={project.image.startsWith('http') ? project.image : `http://localhost:5000${project.image}`}
+                      src={project.image.startsWith('http') ? project.image : getAssetUrl(project.image)}
                       alt={project.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       onError={(e) => {

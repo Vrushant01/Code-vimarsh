@@ -15,31 +15,45 @@ const teamRoutes = require('./routes/teamRoutes');
 const app = express();
 
 // Middleware
-// CORS configuration - allow localhost in development, specific URL in production
+// CORS configuration - Vercel ready
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    // In development, allow any localhost origin
+    // Build allowed origins list
+    const allowedOrigins = [];
+    
+    // Add localhost for development
     if (process.env.NODE_ENV !== 'production') {
-      if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-        return callback(null, true);
-      }
+      allowedOrigins.push(
+        'http://localhost:5173',
+        'http://localhost:8080',
+        'http://localhost:3000',
+        'http://127.0.0.1:5173',
+        'http://127.0.0.1:8080',
+        'http://127.0.0.1:3000'
+      );
     }
     
-    // In production or if FRONTEND_URL is set, check against allowed origins
-    const allowedOrigins = process.env.FRONTEND_URL 
-      ? [process.env.FRONTEND_URL]
-      : ['http://localhost:5173', 'http://localhost:8080', 'http://localhost:3000'];
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
+    // Add production frontend URL from environment variable
+    if (process.env.FRONTEND_URL) {
+      const frontendUrls = Array.isArray(process.env.FRONTEND_URL) 
+        ? process.env.FRONTEND_URL 
+        : process.env.FRONTEND_URL.split(',').map(url => url.trim());
+      allowedOrigins.push(...frontendUrls);
     }
     
-    callback(new Error('Not allowed by CORS'));
+    // Check if origin is allowed
+    if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Not allowed by CORS. Origin: ${origin}`));
+    }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

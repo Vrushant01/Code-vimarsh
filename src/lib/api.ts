@@ -5,14 +5,17 @@
 
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-// Base URL for the backend API
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Base URL for the backend API - MUST be set via VITE_API_URL in Vercel
+const API_BASE_URL = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api'; // Fallback to relative path for same-domain deployment
 
 /**
  * Create axios instance with default configuration
  */
 const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -112,14 +115,21 @@ export interface User {
 
 /**
  * Register a new user
+ * Returns token in response for immediate login
  */
-export const registerUser = async (data: RegisterRequest): Promise<{ success: boolean; user?: User; message?: string; error?: string }> => {
+export const registerUser = async (data: RegisterRequest): Promise<{ success: boolean; user?: User; token?: string; message?: string; error?: string }> => {
   try {
-    const response = await api.post<{ success: boolean; message: string; user: User }>('/auth/register', data);
+    const response = await api.post<{ _id: string; username: string; email: string; role: string; token: string }>('/auth/register', data);
     return {
       success: true,
-      user: response.data.user,
-      message: response.data.message,
+      user: {
+        _id: response.data._id,
+        username: response.data.username,
+        email: response.data.email,
+        role: response.data.role,
+      },
+      token: response.data.token,
+      message: 'Registration successful',
     };
   } catch (error) {
     return {

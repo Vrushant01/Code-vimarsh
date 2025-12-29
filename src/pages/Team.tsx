@@ -4,6 +4,7 @@ import { Github, Linkedin, Twitter, Mail, Loader2 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { getTeamMembers, TeamMember } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
+import { getAssetUrl } from '@/lib/apiUrl';
 
 const socialIcons: Record<string, typeof Github> = {
   github: Github,
@@ -97,7 +98,7 @@ export default function Team() {
                 >
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-accent opacity-20 group-hover:opacity-40 blur-xl transition-opacity" />
                   <img
-                    src={member.photo ? (member.photo.startsWith('http') ? member.photo : `http://localhost:5000${member.photo}`) : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face'}
+                    src={member.photo ? (member.photo.startsWith('http') ? member.photo : getAssetUrl(member.photo)) : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face'}
                     alt={member.name}
                     className="relative w-full h-full rounded-full object-cover border-2 border-border group-hover:border-primary/50 transition-colors"
                     onError={(e) => {

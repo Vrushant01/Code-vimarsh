@@ -8,6 +8,7 @@ import Layout from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { updateUserProfile } from '@/lib/api';
+import { getAssetUrl } from '@/lib/apiUrl';
 
 export default function Profile() {
   const { user, refreshUser } = useAuth();
@@ -32,7 +33,7 @@ export default function Profile() {
       setGithub(user.github || '');
       setLinkedin(user.linkedin || '');
       if (user.profilePhoto) {
-        setAvatarPreview(user.profilePhoto.startsWith('http') ? user.profilePhoto : `http://localhost:5000${user.profilePhoto}`);
+        setAvatarPreview(user.profilePhoto.startsWith('http') ? user.profilePhoto : getAssetUrl(user.profilePhoto));
       }
     }
   }, [user]);

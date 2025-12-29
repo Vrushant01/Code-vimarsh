@@ -12,6 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { getAssetUrl } from '@/lib/apiUrl';
 import { useToast } from '@/hooks/use-toast';
 import { 
   getAllUsers, 
@@ -1233,7 +1234,7 @@ export default function Admin() {
                           <div className="flex items-center gap-3">
                             {member.photo ? (
                               <img
-                                src={member.photo.startsWith('http') ? member.photo : `http://localhost:5000${member.photo}`}
+                                src={member.photo.startsWith('http') ? member.photo : getAssetUrl(member.photo)}
                                 alt={member.name}
                                 className="w-12 h-12 rounded-full object-cover"
                               />
