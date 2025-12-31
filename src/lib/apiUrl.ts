@@ -1,6 +1,6 @@
 /**
  * Helper function to get full API URL for assets
- * Handles both absolute URLs and relative paths
+ * Handles both absolute URLs and relative pathsx
  */
 
 const getApiBaseUrl = (): string => {

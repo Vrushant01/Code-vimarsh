@@ -1,6 +1,6 @@
 /**
  * Central API Service Layer
- * Handles all API calls with automatic JWT token management and error handling
+ * Handles all API calls with automatic JWT token management and error handlingd
  */
 
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
